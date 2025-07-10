@@ -1,4 +1,4 @@
-import HttpService from './HttpService';
+import HttpService from './ApiService';
 
 export async function apiCall(fn, ...args) {
   try {

@@ -3,7 +3,7 @@ import Button from '../../../shared/Button/Button';
 import PumpList from '../components/PumpList';
 import Modal from '../../../shared/Modal/Modal';
 import PumpForm from '../components/PumpForm';
-import HttpService from '../../../services/HttpService';
+import ApiService from '../../../services/ApiService';
 import { apiCall } from '../../../services/ApiWrapper';
 
 import { useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ const OverviewPage = () => {
     const [editingPump, setEditingPump] = useState(null);
 
     useEffect(() => {
-        apiCall(HttpService.getPumps).then(data => {
+        apiCall(ApiService.getPumps).then(data => {
             setPumps(data);
         });
     }, []);
@@ -38,11 +38,11 @@ const OverviewPage = () => {
 
     const handleFormSubmit = async (formData) => {
         if (editingPump) {
-            await apiCall(HttpService.editPump, editingPump.id, formData);
+            await apiCall(ApiService.editPump, editingPump.id, formData);
         } else {
-            await apiCall(HttpService.addPump, formData);
+            await apiCall(ApiService.addPump, formData);
         }
-        const updated = await apiCall(HttpService.getPumps);
+        const updated = await apiCall(ApiService.getPumps);
         setPumps(updated);
         setModalOpen(false);
         setEditingPump(null);

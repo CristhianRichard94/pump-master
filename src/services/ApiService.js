@@ -27,7 +27,7 @@ const simulateRefreshToken = async (token) => {
   throw new Error("Invalid refresh token");
 };
 
-const HttpService = {
+const ApiService = {
   login: async ({ username, password }) => {
     console.log('[API] login called');
     // Simulate login
@@ -89,4 +89,4 @@ const HttpService = {
   getRefreshToken: () => refreshToken,
 };
 
-export default HttpService;
+export default ApiService;
