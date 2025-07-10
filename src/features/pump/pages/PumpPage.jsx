@@ -1,7 +1,7 @@
 import React, {  useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PressureChart from '../components/PressureChart';
-import httpService from '../../../services/HttpService';
+import HttpService from '../../../services/HttpService';
 import { apiCall } from '../../../services/ApiWrapper';
 
 const PumpPage = () => {
@@ -13,7 +13,7 @@ const PumpPage = () => {
   const [pump, setPump] = useState(null);
    
   useEffect(() => {
-    apiCall(httpService.getPump, pumpId).then(data => {
+    apiCall(HttpService.getPump, pumpId).then(data => {
       setPump(data);
     });
   }, [pumpId]);

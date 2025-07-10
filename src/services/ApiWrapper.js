@@ -1,13 +1,13 @@
-import httpService from './HttpService';
+import HttpService from './HttpService';
 
 export async function apiCall(fn, ...args) {
   try {
-    return await fn(...args, httpService.getAuthToken());
+    return await fn(...args, HttpService.getAuthToken());
   } catch (err) {
     if (err.message === 'Unauthorized') {
 
-      const refreshToken = httpService.getRefreshToken();
-      const { token } = await httpService.refreshAuthToken(refreshToken);
+      const refreshToken = HttpService.getRefreshToken();
+      const { token } = await HttpService.refreshAuthToken(refreshToken);
 
       return await fn(...args, token);
     }
