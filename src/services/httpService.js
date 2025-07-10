@@ -14,49 +14,79 @@ let pumps = Array.from({ length: 10 }).map((_, i) => ({
   lastUpdated: new Date(Date.now() - i * 3600 * 1000).toLocaleString(),
 }));
 
-const httpService = {
-  // Login function
-  login: async ({ username, password }) => {
-      return { token: 'dummy', user: { username: 'admin', name: 'Admin User' } };
+let authToken = null;
+let refreshToken = "dummy-refresh-token";
 
+const simulateRefreshToken = async (token) => {
+  console.log(`Call to token refresh for: ${token}`);
+  
+  if (token === refreshToken) {
+    authToken = "dummy-refreshed-token";
+    return { token: authToken, refreshToken };
+  }
+  throw new Error("Invalid refresh token");
+};
+
+const httpService = {
+  login: async ({ username, password }) => {
+    console.log('[API] login called');
+    // Simulate login
+    authToken = 'dummy-auth-token';
+    refreshToken = 'dummy-refresh-token';
+    return {
+      token: authToken,
+      refreshToken,
+      user: { username: 'admin', name: 'Admin User' }
+    };
+  },
+
+  // Refresh token
+  refreshAuthToken: async (token) => {
+    console.log('[API] refreshAuthToken called with token:', token);
+    return simulateRefreshToken(token);
   },
 
   // Get all pumps
-  getPumps: async () => {
+  getPumps: async (token) => {
+    console.log('[API] getPumps called with token:', token, 'current authToken:', authToken);
+    if (token !== authToken) throw new Error('Unauthorized');
     return [...pumps];
   },
 
   // Get pump by id
-  getPump: async (id) => {
+  getPump: async (id, token) => {
+    console.log('[API] getPump called with id:', id, 'token:', token, 'current authToken:', authToken);
+    if (token !== authToken) throw new Error('Unauthorized');
     return pumps.find(p => p.id === id) || null;
   },
 
   // Add a new pump
-  addPump: async (pumpData) => {
-    const newPump = {
-      ...pumpData,
-      id: (pumps.length + 1).toString(),
-      lastUpdated: new Date().toLocaleString(),
-    };
-    pumps.push(newPump);
-    return newPump;
+  addPump: async (pumpData, token) => {
+    console.log('[API] addPump called with token:', token, 'current authToken:', authToken);
+    if (token !== authToken) throw new Error('Unauthorized');
+    // Http call to add a pump
+    return pumpData;
   },
 
   // Edit a pump
-  editPump: async (id, pumpData) => {
-    const idx = pumps.findIndex(p => p.id === id);
-    if (idx === -1) throw new Error('Pump not found');
-    pumps[idx] = { ...pumps[idx], ...pumpData, lastUpdated: new Date().toLocaleString() };
-    return pumps[idx];
+  editPump: async (id, pumpData, token) => {
+    console.log('[API] editPump called with id:', id, 'token:', token, 'current authToken:', authToken);
+    if (token !== authToken) throw new Error('Unauthorized');
+    // Http call to edit a pump
+    return pumpData;
   },
 
   // Remove a pump
-  removePump: async (id) => {
-    const idx = pumps.findIndex(p => p.id === id);
-    if (idx === -1) throw new Error('Pump not found');
-    const removed = pumps.splice(idx, 1)[0];
-    return removed;
-  }
+  removePump: async (id, token) => {
+    console.log('[API] removePump called with id:', id, 'token:', token, 'current authToken:', authToken);
+    if (token !== authToken) throw new Error('Unauthorized');
+    // Http call to remove a pump
+    return id;
+  },
+
+  // Utility to get current token 
+  getAuthToken: () => authToken,
+  getRefreshToken: () => refreshToken,
 };
 
 export default httpService;
