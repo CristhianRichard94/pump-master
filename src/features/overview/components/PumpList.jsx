@@ -1,10 +1,11 @@
+
 import { useNavigate } from 'react-router-dom';
 import PumpItem from '../components/PumpItem';
-
+import './PumpList.css';
 const PumpList = ({ pumps, handleEdit }) => {
   const navigate = useNavigate();
   return (
-    <table>
+    <table className="pump-list">
       <thead>
         <tr>
           <th>Name</th>
